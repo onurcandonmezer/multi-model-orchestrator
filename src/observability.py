@@ -232,9 +232,7 @@ class PipelineObserver:
         self._traces.append(self._current_trace)
         self._current_trace = None
 
-    def build_trace_from_result(
-        self, pipeline: Pipeline, result: PipelineResult
-    ) -> PipelineTrace:
+    def build_trace_from_result(self, pipeline: Pipeline, result: PipelineResult) -> PipelineTrace:
         """Build a PipelineTrace from a completed PipelineResult."""
         trace = PipelineTrace(
             pipeline_name=pipeline.name,

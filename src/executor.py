@@ -140,17 +140,13 @@ class PipelineExecutor:
                 result.total_cost += _estimate_cost(sr.model_used, sr.tokens_used)
 
         if result.steps_results and result.success:
-            last_successful = [
-                r for r in result.steps_results if r.success and not r.skipped
-            ]
+            last_successful = [r for r in result.steps_results if r.success and not r.skipped]
             if last_successful:
                 result.final_output = last_successful[-1].output
 
         return result
 
-    def _execute_step(
-        self, step: PipelineStep, context: dict[str, Any]
-    ) -> StepResult:
+    def _execute_step(self, step: PipelineStep, context: dict[str, Any]) -> StepResult:
         """Execute a single step."""
         # Check condition
         if step.condition and not _evaluate_condition(step.condition, context):
@@ -197,9 +193,7 @@ class PipelineExecutor:
 
         return step_result
 
-    def _execute_llm_step(
-        self, step: PipelineStep, context: dict[str, Any]
-    ) -> StepResult:
+    def _execute_llm_step(self, step: PipelineStep, context: dict[str, Any]) -> StepResult:
         """Execute an LLM step with optional retry."""
         prompt = step.render_prompt(context)
 
@@ -227,9 +221,7 @@ class PipelineExecutor:
             success=True,
         )
 
-    def _execute_transform_step(
-        self, step: PipelineStep, context: dict[str, Any]
-    ) -> StepResult:
+    def _execute_transform_step(self, step: PipelineStep, context: dict[str, Any]) -> StepResult:
         """Execute a Transform step."""
         if step.transform_fn is None:
             return StepResult(
@@ -244,15 +236,14 @@ class PipelineExecutor:
             success=True,
         )
 
-    def _execute_parallel_group(
-        self, step: PipelineStep, context: dict[str, Any]
-    ) -> StepResult:
+    def _execute_parallel_group(self, step: PipelineStep, context: dict[str, Any]) -> StepResult:
         """Execute a group of steps in parallel using anyio."""
         sub_results: list[StepResult] = []
 
         async def _run_parallel() -> None:
             async with anyio.create_task_group() as tg:
                 for sub_step in step.sub_steps:
+
                     async def _run(s: PipelineStep = sub_step) -> None:
                         r = self._execute_step(s, dict(context))
                         sub_results.append(r)
@@ -276,9 +267,7 @@ class PipelineExecutor:
             error=None if all_success else "One or more parallel steps failed",
         )
 
-    def _execute_conditional_step(
-        self, step: PipelineStep, context: dict[str, Any]
-    ) -> StepResult:
+    def _execute_conditional_step(self, step: PipelineStep, context: dict[str, Any]) -> StepResult:
         """Execute a conditional step (runs sub-steps if condition is met)."""
         if step.condition and not _evaluate_condition(step.condition, context):
             return StepResult(
@@ -351,17 +340,13 @@ class AsyncPipelineExecutor:
                 result.total_cost += _estimate_cost(sr.model_used, sr.tokens_used)
 
         if result.steps_results and result.success:
-            last_successful = [
-                r for r in result.steps_results if r.success and not r.skipped
-            ]
+            last_successful = [r for r in result.steps_results if r.success and not r.skipped]
             if last_successful:
                 result.final_output = last_successful[-1].output
 
         return result
 
-    async def _execute_step(
-        self, step: PipelineStep, context: dict[str, Any]
-    ) -> StepResult:
+    async def _execute_step(self, step: PipelineStep, context: dict[str, Any]) -> StepResult:
         """Execute a single step asynchronously."""
         if step.condition and not _evaluate_condition(step.condition, context):
             return StepResult(
@@ -385,9 +370,7 @@ class AsyncPipelineExecutor:
                 )
             elif step.step_type == StepType.TRANSFORM:
                 if step.transform_fn is None:
-                    step_result = StepResult(
-                        success=False, error="No transform function"
-                    )
+                    step_result = StepResult(success=False, error="No transform function")
                 else:
                     output = step.transform_fn(context)
                     step_result = StepResult(output=output, success=True)
@@ -405,14 +388,13 @@ class AsyncPipelineExecutor:
         step_result.step_name = step.name
         return step_result
 
-    async def _execute_parallel(
-        self, step: PipelineStep, context: dict[str, Any]
-    ) -> StepResult:
+    async def _execute_parallel(self, step: PipelineStep, context: dict[str, Any]) -> StepResult:
         """Execute sub-steps in parallel."""
         sub_results: list[StepResult] = []
 
         async with anyio.create_task_group() as tg:
             for sub_step in step.sub_steps:
+
                 async def _run(s: PipelineStep = sub_step) -> None:
                     r = await self._execute_step(s, dict(context))
                     sub_results.append(r)

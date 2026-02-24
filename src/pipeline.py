@@ -104,9 +104,7 @@ class Pipeline:
 
             # Validate depends_on references
             if step.depends_on and step.depends_on not in step_names:
-                errors.append(
-                    f"Step '{step.name}' depends on unknown step '{step.depends_on}'"
-                )
+                errors.append(f"Step '{step.name}' depends on unknown step '{step.depends_on}'")
 
         return errors
 
@@ -181,7 +179,4 @@ class Pipeline:
         return len(self.steps)
 
     def __repr__(self) -> str:
-        return (
-            f"Pipeline(name='{self.name}', version='{self.version}', "
-            f"steps={len(self.steps)})"
-        )
+        return f"Pipeline(name='{self.name}', version='{self.version}', steps={len(self.steps)})"

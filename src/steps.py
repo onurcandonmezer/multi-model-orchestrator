@@ -95,9 +95,7 @@ class PipelineStep:
                 errors.append(f"Step '{self.name}': transform_fn is required for Transform steps")
         elif self.step_type == StepType.PARALLEL_GROUP:
             if not self.sub_steps:
-                errors.append(
-                    f"Step '{self.name}': sub_steps required for ParallelGroup steps"
-                )
+                errors.append(f"Step '{self.name}': sub_steps required for ParallelGroup steps")
         return errors
 
     def render_prompt(self, context: dict[str, Any]) -> str:

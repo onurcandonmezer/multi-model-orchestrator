@@ -157,11 +157,7 @@ class TestFallbackChain:
             chain.execute()
 
     def test_chaining(self) -> None:
-        chain = (
-            FallbackChain()
-            .add_option("a", lambda: "a")
-            .add_option("b", lambda: "b")
-        )
+        chain = FallbackChain().add_option("a", lambda: "a").add_option("b", lambda: "b")
         assert len(chain.options) == 2
 
 

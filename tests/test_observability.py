@@ -81,9 +81,7 @@ class TestPipelineTrace:
 
     def test_to_markdown_with_errors(self) -> None:
         trace = PipelineTrace(pipeline_name="test")
-        trace.add_step_trace(
-            StepTrace(step_name="s1", success=False, error="Something broke")
-        )
+        trace.add_step_trace(StepTrace(step_name="s1", success=False, error="Something broke"))
         trace.finalize()
 
         md = trace.to_markdown()
