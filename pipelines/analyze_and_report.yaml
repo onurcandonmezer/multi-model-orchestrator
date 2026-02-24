@@ -1,0 +1,27 @@
+name: analyze_and_report
+version: "1.0"
+description: "Analyze data or text and generate a comprehensive report"
+steps:
+  - name: initial_analysis
+    model: gemini-2.5-flash-lite
+    prompt: "Perform a detailed analysis of the following:\n{input_data}"
+    output_key: analysis
+    timeout_seconds: 60
+
+  - name: identify_trends
+    model: gemini-2.0-flash
+    prompt: "Based on this analysis, identify key trends and patterns:\n{analysis}"
+    output_key: trends
+    depends_on: initial_analysis
+
+  - name: generate_recommendations
+    model: gemini-2.5-flash-lite
+    prompt: "Based on these trends, generate actionable recommendations:\n{trends}"
+    output_key: recommendations
+    depends_on: identify_trends
+
+  - name: compile_report
+    model: gemini-2.5-flash-lite
+    prompt: "Compile a professional report with the following sections:\n\nAnalysis:\n{analysis}\n\nTrends:\n{trends}\n\nRecommendations:\n{recommendations}"
+    output_key: final_report
+    depends_on: generate_recommendations

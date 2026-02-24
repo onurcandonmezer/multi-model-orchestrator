@@ -1,0 +1,21 @@
+name: research_and_summarize
+version: "1.0"
+description: "Research a topic and create a concise executive summary"
+steps:
+  - name: research
+    model: gemini-2.5-flash-lite
+    prompt: "Research the following topic and provide key findings:\n{topic}"
+    output_key: research_output
+    timeout_seconds: 60
+
+  - name: extract_key_points
+    model: gemini-2.5-flash-lite
+    prompt: "Extract the top 5 key points from this research:\n{research_output}"
+    output_key: key_points
+    depends_on: research
+
+  - name: summarize
+    model: gemini-2.5-flash-lite
+    prompt: "Create a professional executive summary from these key points:\n{key_points}"
+    output_key: summary
+    depends_on: extract_key_points

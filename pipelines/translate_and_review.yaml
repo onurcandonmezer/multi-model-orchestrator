@@ -1,0 +1,21 @@
+name: translate_and_review
+version: "1.0"
+description: "Translate text to a target language and review the translation for quality"
+steps:
+  - name: translate
+    model: gemini-2.5-flash-lite
+    prompt: "Translate the following text to {target_language}:\n{source_text}"
+    output_key: translation
+    timeout_seconds: 45
+
+  - name: back_translate
+    model: gemini-2.0-flash
+    prompt: "Translate the following text back to English for quality verification:\n{translation}"
+    output_key: back_translation
+    depends_on: translate
+
+  - name: review
+    model: gemini-2.5-flash-lite
+    prompt: "Review the translation quality by comparing:\nOriginal: {source_text}\nTranslation: {translation}\nBack-translation: {back_translation}\n\nProvide a quality score and suggestions."
+    output_key: review_result
+    depends_on: back_translate

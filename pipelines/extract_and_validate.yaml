@@ -1,0 +1,21 @@
+name: extract_and_validate
+version: "1.0"
+description: "Extract structured data from text and validate it for correctness"
+steps:
+  - name: extract
+    model: gemini-2.5-flash-lite
+    prompt: "Extract all structured data (names, dates, numbers, entities) from the following text:\n{document}"
+    output_key: extracted_data
+    timeout_seconds: 45
+
+  - name: validate
+    model: gemini-2.0-flash
+    prompt: "Validate the following extracted data for accuracy and consistency. Flag any issues:\n{extracted_data}"
+    output_key: validation_result
+    depends_on: extract
+
+  - name: format_output
+    model: gemini-2.5-flash-lite
+    prompt: "Format the validated data into a clean JSON structure:\nData: {extracted_data}\nValidation: {validation_result}"
+    output_key: formatted_output
+    depends_on: validate
