@@ -72,7 +72,7 @@ A declarative multi-LLM pipeline framework for chaining multiple language models
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/multi-model-orchestrator.git
+git clone https://github.com/onurcandonmezer/multi-model-orchestrator.git
 cd multi-model-orchestrator
 
 # Install with uv
